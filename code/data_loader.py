@@ -3,8 +3,10 @@ import cv2
 import numpy as np
 
 #Function for loading the dataset:
+#The dataset consists the videos from 3 classes:
+#Class-1: PullUps, Class-2: Punch, Class-3: PushUps
 
-def load_split_data_file(split_file, dataset_path):
+def load_dataset(split_file, dataset_path):
     video_paths = []
     labels = []
     class_map = {}
@@ -16,8 +18,8 @@ def load_split_data_file(split_file, dataset_path):
             line = line.strip()
             if line == "":
                 continue
-            parts = line.split(",")        #  CSV split
-            rel_path = parts[1].lstrip("/")  # PullUps/v_XXX.avi
+            parts = line.split(",")        #  Spiliting the CSV file.
+            rel_path = parts[1].lstrip("/")
             class_name = parts[2]
             
 
@@ -35,7 +37,7 @@ def load_split_data_file(split_file, dataset_path):
 # Keeping max number of frames = 30
 # keeping frame size = "224 x 224"
 
-def extract_video_frames(video_path, max_frames=30, size=(224,224)):
+def extract_frames(video_path, max_frames=30, size=(224,224)):
     cap = cv2.VideoCapture(video_path)
     frames_list = []
 
@@ -48,7 +50,8 @@ def extract_video_frames(video_path, max_frames=30, size=(224,224)):
 
     cap.release()
 
-# Using uniform sampling to extract the frames. Max frame: 30
+# Taking 30 frames from the video at equal time interval also called uniform sampling technique to extract the frames. 
+# Max frame: 30
 
     if len(frames_list) > max_frames:
         idx = np.linspace(0, len(frames_list)-1, max_frames).astype(int)

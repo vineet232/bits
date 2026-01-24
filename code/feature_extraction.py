@@ -49,6 +49,7 @@ def video_color_features(frames):
 
     return np.hstack([avg_hist, avg_mom])
 
+
 #--------------------------------------------
 # 3. Color moments (mean, variance, skewness)
 #--------------------------------------------
@@ -61,6 +62,7 @@ def color_moments(frame):
     sk   = skew(img, axis=0)
 
     return np.hstack([mean, var, sk])
+
 
 # ...............................................  Texture features  ........................................... #
 
@@ -118,6 +120,8 @@ def gabor_features(frame):
         feats.append(filtered.var())
 
     return np.array(feats)
+
+
 #------------------------------------------
 # 4. Video-level texture features (average across frames)
 #------------------------------------------
@@ -215,7 +219,7 @@ def video_shape_features(frames):
 # – Motion intensity histograms
 #------------------------------------------
 
-
+'''
 def compute_mhi(frames, tau=15):
     h, w, _ = frames[0].shape
     mhi = np.zeros((h, w), dtype=np.float32)
@@ -234,7 +238,7 @@ def compute_mhi(frames, tau=15):
 
     mhi = (mhi / t) * 255
     return mhi.astype(np.uint8)
-
+'''
 
 #Temporal features
 
@@ -274,6 +278,7 @@ def temporal_gradient(feature_sequence):
         np.mean(grad, axis=0),
         np.std(grad, axis=0)
     ])
+
 # 4. Example: motion-based temporal features
 
 def temporal_motion_features(frames):

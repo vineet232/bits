@@ -1,0 +1,10 @@
+UCF-101 Subset for Action Recognition
+Source: Kaggle
+
+Dataset URL:
+https://www.kaggle.com/datasets/aisuko/ucf101-subset
+
+Classes used in this project:
+1. PullUps
+2. Punch
+3. PushUps

@@ -1,0 +1,23 @@
+# Core scientific computing
+numpy
+pandas
+scipy
+
+# Computer vision and image processing
+opencv-python
+scikit-image
+
+# Classical machine learning
+scikit-learn
+
+# Visualization
+matplotlib
+
+# Utility
+tqdm
+
+# Notebook environment
+jupyter
+notebook
+ipykernel
+

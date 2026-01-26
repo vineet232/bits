@@ -6,6 +6,7 @@ from skimage.feature import graycomatrix, graycoprops, local_binary_pattern, hog
 
 
 
+
 ################################################################################################################
 #............................................... Low-Level Features............................................#
 ################################################################################################################
@@ -15,7 +16,7 @@ from skimage.feature import graycomatrix, graycoprops, local_binary_pattern, hog
 #------------------------------------------
 # 1. RGB + HSV color histograms (per frame)
 #------------------------------------------
-
+'''
 def color_hist_features(frame, bins=32):
     # RGB histogram
     rgb_hist = cv2.calcHist([frame], [0,1,2], None,
@@ -31,6 +32,28 @@ def color_hist_features(frame, bins=32):
     hsv_hist = cv2.normalize(hsv_hist, hsv_hist).flatten()
 
     return np.hstack([rgb_hist, hsv_hist])
+
+'''
+def color_hist_features(frame, bins=32):
+
+    # Ensure frame is in uint8 format (0–255) for OpenCV operations
+    frame_u8 = (frame * 255).astype(np.uint8)
+
+    # ---------------- RGB histogram ----------------
+    rgb_hist = cv2.calcHist([frame_u8], [0,1,2], None,
+                            [bins, bins, bins],
+                            [0,256, 0,256, 0,256])
+    rgb_hist = cv2.normalize(rgb_hist, rgb_hist).flatten()
+
+    # ---------------- HSV histogram ----------------
+    hsv = cv2.cvtColor(frame_u8, cv2.COLOR_BGR2HSV)
+    hsv_hist = cv2.calcHist([hsv], [0,1,2], None,
+                            [bins, bins, bins],
+                            [0,180, 0,256, 0,256])
+    hsv_hist = cv2.normalize(hsv_hist, hsv_hist).flatten()
+
+    return np.hstack([rgb_hist, hsv_hist])
+
 
 #--------------------------------------------
 # 2. Average color distribution across video
@@ -71,7 +94,7 @@ def color_moments(frame):
 #------------------------------------------
 
 def glcm_features(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray = gray = cv2.cvtColor((frame * 255).astype(np.uint8), cv2.COLOR_BGR2GRAY)
 
     glcm = graycomatrix(gray,
                         distances=[1],
@@ -93,7 +116,7 @@ def glcm_features(frame):
 #------------------------------------------
 
 def lbp_features(frame, P=8, R=1):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray = gray = cv2.cvtColor((frame * 255).astype(np.uint8), cv2.COLOR_BGR2GRAY)
     lbp = local_binary_pattern(gray, P, R, method="uniform")
 
     hist, _ = np.histogram(lbp.ravel(),
@@ -110,7 +133,7 @@ def lbp_features(frame, P=8, R=1):
 #------------------------------------------
 
 def gabor_features(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray = gray = cv2.cvtColor((frame * 255).astype(np.uint8), cv2.COLOR_BGR2GRAY)
     feats = []
 
     for theta in [0, np.pi/4, np.pi/2, 3*np.pi/4]:
@@ -148,7 +171,7 @@ def video_texture_features(frames):
 #------------------------------------------
 
 def edge_features(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray = gray = cv2.cvtColor((frame * 255).astype(np.uint8), cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(gray, 100, 200)
 
     hist, _ = np.histogram(edges.ravel(), bins=2, range=(0,256), density=True)
@@ -158,7 +181,7 @@ def edge_features(frame):
 # 2. Contour-based features
 #------------------------------------------
 def contour_features(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray = gray = cv2.cvtColor((frame * 255).astype(np.uint8), cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(gray, 100, 200)
 
     contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -181,7 +204,7 @@ def contour_features(frame):
 #------------------------------------------
 
 def hog_features(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray = gray = cv2.cvtColor((frame * 255).astype(np.uint8), cv2.COLOR_BGR2GRAY)
 
     hog_feat = hog(gray,
                    orientations=9,
@@ -218,27 +241,6 @@ def video_shape_features(frames):
 # – Statistical measures of frame differences
 # – Motion intensity histograms
 #------------------------------------------
-
-'''
-def compute_mhi(frames, tau=15):
-    h, w, _ = frames[0].shape
-    mhi = np.zeros((h, w), dtype=np.float32)
-
-    prev = cv2.cvtColor(frames[0], cv2.COLOR_BGR2GRAY)
-    t = 1
-
-    for i in range(1, len(frames)):
-        curr = cv2.cvtColor(frames[i], cv2.COLOR_BGR2GRAY)
-        diff = cv2.absdiff(curr, prev)
-        _, motion_mask = cv2.threshold(diff, 25, 1, cv2.THRESH_BINARY)
-
-        mhi[motion_mask == 1] = t
-        prev = curr
-        t += 1
-
-    mhi = (mhi / t) * 255
-    return mhi.astype(np.uint8)
-'''
 
 #Temporal features
 
@@ -285,8 +287,9 @@ def temporal_motion_features(frames):
     motion_vals = []
 
     for i in range(1, len(frames)):
-        g1 = cv2.cvtColor(frames[i-1], cv2.COLOR_BGR2GRAY)
-        g2 = cv2.cvtColor(frames[i], cv2.COLOR_BGR2GRAY)
+        g1 = cv2.cvtColor((frames[i-1] * 255).astype(np.uint8), cv2.COLOR_BGR2GRAY)
+        g2 = cv2.cvtColor((frames[i]   * 255).astype(np.uint8), cv2.COLOR_BGR2GRAY)
+
         diff = cv2.absdiff(g1, g2)
         motion_vals.append([np.mean(diff)])
 
@@ -297,5 +300,6 @@ def temporal_motion_features(frames):
     grad  = temporal_gradient(motion_vals)
 
     return np.hstack([stats, var, grad])
+
 
 

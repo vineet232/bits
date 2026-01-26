@@ -1,0 +1,20 @@
+Dataset Statistics:
+
+Total number of classes: 3
+Classes:
+- PullUps
+- Punch
+- PushUps
+
+Total number of videos: 362
+Training videos: 271
+Validation videos: 45
+Test videos: 46
+
+Approximate video duration range: 3s – 10s
+Frame rate: variable
+
+Preprocessing settings:
+- Frames extracted per video: 30
+- Frame size: 224 x 224
+- Sampling strategy: Uniform sampling

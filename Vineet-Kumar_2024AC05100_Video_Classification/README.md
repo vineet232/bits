@@ -10,10 +10,19 @@ The main objective is to design and evaluate a complete video classification pip
 2. Deep learning using end-to-end trainable models  
 
 The project covers dataset organization, preprocessing, feature extraction, model development, experimental evaluation, and a comparative analysis of both approaches.
+## Project GitHub Repository
 
----
+- **URL:** https://github.com/vineet232/bits
+
+To download the project, clone the GitHub repository by running the following command in your terminal:
+
+```bash
+git clone https://github.com/vineet232/bits.git
+
+```
 
 ## Project Directory Structure
+```text
 
 VINEET-KUMAR_2024AC05100_Video_Classification/
 │
@@ -54,7 +63,7 @@ VINEET-KUMAR_2024AC05100_Video_Classification/
 │ └── feature_visualizations/
 │
 └── README.md
-
+```
 
 ---
 

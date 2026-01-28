@@ -9,7 +9,7 @@ class ResNet18Temporal(nn.Module):
         self.feature_extractor = nn.Sequential(*list(base.children())[:-1])
 
         for param in self.feature_extractor.parameters():
-            param.requires_grad = False
+            param.requires_grad = True
 
         self.pooling = pooling
         self.dropout = nn.Dropout(dropout)

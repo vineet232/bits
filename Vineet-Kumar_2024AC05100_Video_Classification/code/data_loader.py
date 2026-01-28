@@ -1,6 +1,11 @@
 import os
 import cv2
 import numpy as np
+import random
+import torch
+from torch.utils.data import Dataset
+
+############################################ Classical Machine Learning ###################################################
 
 #Function for loading the dataset:
 #The dataset consists the videos from 3 classes:
@@ -65,3 +70,76 @@ def extract_frames(video_path, max_frames=30, size=(320,240)):
         frames_list = [frames_list[i] for i in idx]
 
     return frames_list
+
+
+
+######################################### Deep Learning ####################################################
+
+
+import os, cv2, random
+import pandas as pd
+import numpy as np
+import torch
+from torch.utils.data import Dataset
+
+class VideoDataset(Dataset):
+    def __init__(self, csv_file, root_dir, class_map,
+                 transform=None, num_frames=16, train=True):
+
+        self.data = pd.read_csv(csv_file)
+        self.root_dir = root_dir
+        self.class_map = class_map
+        self.transform = transform
+        self.num_frames = num_frames
+        self.train = train
+
+    def __len__(self):
+        return len(self.data)
+
+    def _load_video(self, path):
+        cap = cv2.VideoCapture(path)
+        frames = []
+        while True:
+            ret, frame = cap.read()
+            if not ret: break
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frames.append(frame)
+        cap.release()
+        return frames
+
+    def _sample_frames(self, frames):
+        total = len(frames)
+        if total <= self.num_frames:
+            idxs = np.linspace(0, total-1, self.num_frames).astype(int)
+        else:
+            if self.train:
+                start = random.randint(0, total - self.num_frames)
+            else:
+                start = (total - self.num_frames)//2
+            idxs = np.linspace(start, start+self.num_frames-1, self.num_frames).astype(int)
+        return [frames[i] for i in idxs]
+
+    
+    def __getitem__(self, idx):
+        row = self.data.iloc[idx]
+
+        video_rel_path = row["clip_path"]
+        label_name = row["label"]
+
+        video_path = os.path.join(self.root_dir, video_rel_path.lstrip("/"))
+        label = self.class_map[label_name]
+
+        frames = self._load_video(video_path)
+        frames = self._sample_frames(frames)
+
+        processed = []
+        for f in frames:
+            if self.transform:
+                f = self.transform(f)
+            processed.append(f)
+
+        video = torch.stack(processed)
+        return video, label
+
+
+

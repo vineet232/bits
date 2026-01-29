@@ -82,7 +82,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
-class VideoDataset(Dataset):
+class VideoDataset2D(Dataset):
     def __init__(self, csv_file, root_dir, class_map,
                  transform=None, num_frames=16, train=True):
 
@@ -139,6 +139,13 @@ class VideoDataset(Dataset):
             processed.append(f)
 
         video = torch.stack(processed)
+        return video, label
+    
+
+class VideoDataset3D(VideoDataset2D):
+    def __getitem__(self, idx):
+        video, label = super().__getitem__(idx)   # (T,C,H,W)
+        video = video.permute(1,0,2,3)             # (C,T,H,W) for 3D CNN
         return video, label
 
 

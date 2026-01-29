@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torchvision.models import resnet18, ResNet18_Weights
+from torchvision.models.video import r3d_18, R3D_18_Weights
 
 class ResNet18Temporal(nn.Module):
     def __init__(self, num_classes, pooling="avg", dropout=0.7):
@@ -32,3 +33,33 @@ class ResNet18Temporal(nn.Module):
         feats = self.dropout(feats)
         out = self.fc(feats)
         return out
+    
+
+    ######################################........3D CNN model.......######################################
+
+ 
+
+class ResNet3D(nn.Module):
+    def __init__(self, num_classes, dropout=0.5, freeze_backbone=True):
+        super().__init__()
+
+        base = r3d_18(weights=R3D_18_Weights.DEFAULT)
+
+        if freeze_backbone:
+            for param in base.parameters():
+                param.requires_grad = False   # ✅ freeze backbone if false dont freeze if true
+
+        in_features = base.fc.in_features
+        base.fc = nn.Identity()   # remove classifier
+
+        self.backbone = base
+        self.dropout = nn.Dropout(dropout)
+        self.fc = nn.Linear(in_features, num_classes)
+
+    def forward(self, x):
+        # x already: (B, C, T, H, W)
+        x = self.backbone(x)
+        x = self.dropout(x)
+        x = self.fc(x)
+        return x
+

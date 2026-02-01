@@ -99,25 +99,44 @@ class VideoDataset2D(Dataset):
     def _load_video(self, path):
         cap = cv2.VideoCapture(path)
         frames = []
+
         while True:
             ret, frame = cap.read()
-            if not ret: break
+            if not ret:
+                break
+
+            # BGR → RGB
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+            # Quality enhancement (artifact / compression noise)
+            frame = cv2.GaussianBlur(frame, (3,3), 0)
+
             frames.append(frame)
+
         cap.release()
         return frames
 
+
+    
     def _sample_frames(self, frames):
         total = len(frames)
+
+        # -------- Dense sampling (every frame) --------
         if total <= self.num_frames:
             idxs = np.linspace(0, total-1, self.num_frames).astype(int)
+
         else:
             if self.train:
+                # 🔹 Random dense clip
                 start = random.randint(0, total - self.num_frames)
             else:
-                start = (total - self.num_frames)//2
-            idxs = np.linspace(start, start+self.num_frames-1, self.num_frames).astype(int)
+                # 🔹 Center dense clip (evaluation)
+                start = (total - self.num_frames) // 2
+
+            idxs = np.arange(start, start + self.num_frames)
+
         return [frames[i] for i in idxs]
+
 
     
     def __getitem__(self, idx):

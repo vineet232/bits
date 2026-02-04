@@ -16,24 +16,7 @@ from skimage.feature import graycomatrix, graycoprops, local_binary_pattern, hog
 #------------------------------------------
 # 1. RGB + HSV color histograms (per frame)
 #------------------------------------------
-'''
-def color_hist_features(frame, bins=32):
-    # RGB histogram
-    rgb_hist = cv2.calcHist([frame], [0,1,2], None,
-                            [bins, bins, bins],
-                            [0,256, 0,256, 0,256])
-    rgb_hist = cv2.normalize(rgb_hist, rgb_hist).flatten()
 
-    # HSV histogram
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    hsv_hist = cv2.calcHist([hsv], [0,1,2], None,
-                            [bins, bins, bins],
-                            [0,180, 0,256, 0,256])
-    hsv_hist = cv2.normalize(hsv_hist, hsv_hist).flatten()
-
-    return np.hstack([rgb_hist, hsv_hist])
-
-'''
 def color_hist_features(frame, bins=32):
 
     # Ensure frame is in uint8 format (0–255) for OpenCV operations

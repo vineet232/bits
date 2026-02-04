@@ -5,7 +5,8 @@ This assignment project uses a customized subset of the UCF-101 action recogniti
 Dataset URL:
 https://www.kaggle.com/datasets/aisuko/ucf101-subset
 
-The dataset contains short video clips belonging to three action categories:
+The dataset contains short video clips belonging to many categories.
+However, in ths case following three action categories are chosen:
 
 - PullUps  
 - Punch  

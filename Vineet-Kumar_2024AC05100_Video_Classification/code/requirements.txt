@@ -1,23 +1,22 @@
-# Core scientific computing
-numpy
+# ---------------- Core ----------------
+numpy==2.3.0
 pandas
-scipy
 
-# Computer vision and image processing
+# ---------------- Visualization ----------------
+matplotlib
+seaborn
+
+# ---------------- Classical ML ----------------
+scikit-learn
+joblib
 opencv-python
 scikit-image
 
-# Classical machine learning
-scikit-learn
+# ---------------- Deep Learning ----------------
+torch
+torchvision
 
-# Visualization
-matplotlib
-
-# Utility
+# ---------------- Analysis & Utilities ----------------
 tqdm
-
-# Notebook environment
-jupyter
-notebook
-ipykernel
-
+umap-learn
+psutil

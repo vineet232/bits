@@ -1,65 +1,126 @@
 import torch
 import torch.nn as nn
+
+# Pretrained 2D ResNet-18 for frame-level feature extraction
 from torchvision.models import resnet18, ResNet18_Weights
+
+# Pretrained 3D ResNet-18 for spatiotemporal feature learning
 from torchvision.models.video import r3d_18, R3D_18_Weights
 
+
+############################################################
+#              2D CNN WITH TEMPORAL POOLING
+############################################################
+
 class ResNet18Temporal(nn.Module):
+    
+    # Here the model uses 2D CNN to extract spatial features from each video frame
+    # independently, followed by temporal pooling across frames.
+    
+
     def __init__(self, num_classes, pooling="avg", dropout=0.7):
         super().__init__()
-        base = resnet18(weights=ResNet18_Weights.DEFAULT)
-        self.feature_extractor = nn.Sequential(*list(base.children())[:-1])
 
+        # Load ImageNet-pretrained ResNet-18
+        base_model = resnet18(weights=ResNet18_Weights.DEFAULT)
+
+        # Remove the final classification layer to use ResNet as a feature extractor
+        self.feature_extractor = nn.Sequential(
+            *list(base_model.children())[:-1]
+        )
+
+        # Allow fine-tuning of the backbone
         for param in self.feature_extractor.parameters():
             param.requires_grad = True
 
+        # Temporal pooling strategy: average or max
         self.pooling = pooling
+
+        # Dropout applied after temporal pooling
         self.dropout = nn.Dropout(dropout)
+
+        # Classification layer
         self.fc = nn.Linear(512, num_classes)
 
-
-
     def forward(self, x):
-        # x: (B,T,C,H,W)
+        # Input tensor shape:
+        # x → (batch_size, num_frames, channels, height, width)
+
         B, T, C, H, W = x.shape
-        x = x.view(B*T, C, H, W)
-        feats = self.feature_extractor(x).squeeze(-1).squeeze(-1)
-        feats = feats.view(B, T, -1)
 
+        # Collapse batch and time to process frames independently
+        x = x.reshape(B * T, C, H, W)
+
+        # Extract spatial features per frame
+        features = self.feature_extractor(x)
+
+        # Remove singleton spatial dimensions
+        features = features.squeeze(-1).squeeze(-1)
+
+        # Restore temporal structure
+        features = features.view(B, T, -1)
+
+        # Aggregate features across time dimension
         if self.pooling == "max":
-            feats, _ = feats.max(dim=1)
+            features, _ = torch.max(features, dim=1)
         else:
-            feats = feats.mean(dim=1)
+            features = torch.mean(features, dim=1)
 
-        feats = self.dropout(feats)
-        out = self.fc(feats)
-        return out
-    
+        # Regularization
+        features = self.dropout(features)
 
-    ######################################........3D CNN model.......######################################
+        # Final prediction
+        output = self.fc(features)
 
- 
+        return output
+
+
+############################################################
+#                 3D CNN BASED MODEL
+############################################################
 
 class ResNet3D(nn.Module):
+    
+    # Here the model uses 3D convolutional backbone to jointly learn
+    # spatial and temporal representations from video clips.
+    
+
     def __init__(self, num_classes, dropout=0.5, freeze_backbone=True):
         super().__init__()
 
-        base = r3d_18(weights=R3D_18_Weights.DEFAULT)
+        # Load Kinetics-pretrained 3D ResNet-18
+        backbone_model = r3d_18(weights=R3D_18_Weights.DEFAULT)
 
+        # Optionally freeze backbone parameters
         if freeze_backbone:
-            for param in base.parameters():
-                param.requires_grad = False   # ✅ freeze backbone if false dont freeze if true
+            for param in backbone_model.parameters():
+                param.requires_grad = False
 
-        in_features = base.fc.in_features
-        base.fc = nn.Identity()   # remove classifier
+        # Store feature dimensionality before classification
+        feature_dim = backbone_model.fc.in_features
 
-        self.backbone = base
+        # Remove original classification head
+        backbone_model.fc = nn.Identity()
+
+        self.backbone = backbone_model
+
+        # Dropout for improved generalization
         self.dropout = nn.Dropout(dropout)
-        self.fc = nn.Linear(in_features, num_classes)
+
+        # Task-specific classifier
+        self.fc = nn.Linear(feature_dim, num_classes)
 
     def forward(self, x):
-        # x already: (B, C, T, H, W)
-        x = self.backbone(x)
-        x = self.dropout(x)
-        x = self.fc(x)
-        return x
+        # Input tensor shape:
+        # x → (batch_size, channels, frames, height, width)
 
+        # Extract spatiotemporal features
+        features = self.backbone(x)
+
+        # Apply dropout
+        features = self.dropout(features)
+
+        # Map features to class scores
+        output = self.fc(features)
+
+        return output

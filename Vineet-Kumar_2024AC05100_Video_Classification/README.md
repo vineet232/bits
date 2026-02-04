@@ -178,10 +178,10 @@ This typically includes Python, OpenCV, NumPy, scikit-learn, and deep learning l
 
 ## Student Information
 
-Student Name: Vineet Kumar
-Roll No: 2024AC05100 
-Course: Video Analytics  
-Assignment: Video Classification
+- Student Name: Vineet Kumar
+- Roll No: 2024AC05100 
+- Course: Video Analytics  
+- Assignment: Video Classification
 
 
 

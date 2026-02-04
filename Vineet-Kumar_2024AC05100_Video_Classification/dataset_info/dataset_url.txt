@@ -4,6 +4,12 @@ Source: Kaggle
 Dataset URL:
 https://www.kaggle.com/datasets/aisuko/ucf101-subset
 
+Customized dataset will be automatically downloaded by cloning the following GitHub repository:
+https://github.com/vineet232/bits
+
+To clone the repository run the following command:
+git clone https://github.com/vineet232/bits.git
+
 Classes used in this project:
 1. PullUps
 2. Punch

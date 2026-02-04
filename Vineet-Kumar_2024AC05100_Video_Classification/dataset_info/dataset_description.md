@@ -19,3 +19,10 @@ The videos vary in background conditions, execution styles, camera viewpoints, a
 For this assignment, the dataset is organized into training, validation, and test splits using separate CSV files. This separation is maintained consistently across all experiments to ensure unbiased model evaluation and fair performance comparison.
 
 Only a small subset of the original UCF-101 dataset is used in order to allow controlled experimentation, faster feature extraction, and systematic comparison between classical machine learning approaches and deep learning-based models.
+
+Important: 
+Customized dataset will be automatically downloaded by cloning the following GitHub repository:
+https://github.com/vineet232/bits
+
+To clone the repository run the following command:
+git clone https://github.com/vineet232/bits.git

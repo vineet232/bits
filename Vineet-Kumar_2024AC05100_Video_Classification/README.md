@@ -20,6 +20,10 @@ To download the project, clone the GitHub repository by running the following co
 git clone https://github.com/vineet232/bits.git
 
 ```
+This will also download the customized dataset consisting 3 classes:
+1. PullUps
+2. Punch
+3. PushUps
 
 ## Project Directory Structure
 ```text
@@ -40,7 +44,7 @@ VINEET-KUMAR_2024AC05100_Video_Classification/
 │ └── requirements.txt
 │
 ├── report/
-│ └── Vineet-Kumar_ 2024AC05100 _Comparative_Report.pdf
+│ └── Vineet-Kumar_2024AC05100_Comparative_Report.pdf
 │
 ├── dataset_info/
 │ ├── dataset/
@@ -60,7 +64,11 @@ VINEET-KUMAR_2024AC05100_Video_Classification/
 ├── results/
 │ ├── confusion_matrices/
 │ ├── performance_plots/
-│ └── feature_visualizations/
+│ ├── feature_visualizations/
+│ ├── saved_models/
+│ ├── stats_classical/
+│ ├── stats_deep_learning/
+│ └── saved_feature_matrices/
 │
 └── README.md
 ```
@@ -123,7 +131,10 @@ All generated outputs are stored in the `results/` directory:
 - `confusion_matrices/` – classification results and error patterns  
 - `performance_plots/` – training curves and comparison graphs  
 - `feature_visualizations/` – intermediate visual and motion representations  
-
+- `saved_models/` – contains models saved after training.
+- `stats_classical/` – consists classial models related saved parameters and values.
+- `stats_deep_learning/` – consists deep learning models related saved parameters and values.
+- `saved_feature_matrices/` – consists feature matrices created after feature extraction.
 The findings are discussed in detail in the final report.
 
 ---
@@ -143,7 +154,7 @@ All software dependencies are listed in:
 `code/requirements.txt`
 
 
-This typically includes Python, OpenCV, NumPy, scikit-learn, and deep learning libraries used for Part B.
+This typically includes Python, OpenCV, NumPy, scikit-learn, and deep learning libraries.
 
 ---
 

@@ -160,9 +160,10 @@ This typically includes Python, OpenCV, NumPy, scikit-learn, and deep learning l
 
 ## How to Use This Project
 
-1. Install required packages using `requirements.txt`  
-2. Open `part_a_classical.ipynb` for the classical pipeline  
-3. Open `part_b_deep_learning.ipynb` for deep learning experiments  
+1. Install required packages using `requirements.txt` 
+   Note: It is recommended to use Python virtual environment to avoid any conflict.
+2. Run `part_a_classical.ipynb` for the classical pipeline  
+3. Run `part_b_deep_learning.ipynb` for deep learning experiments  
 4. Run `comparative_analysis.ipynb` for combined evaluation  
 5. View generated outputs in the `results/` directory  
 

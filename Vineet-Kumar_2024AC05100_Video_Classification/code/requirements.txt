@@ -9,7 +9,7 @@ seaborn
 # ---------------- Classical ML ----------------
 scikit-learn
 joblib
-opencv-python
+opencv-python-headless
 scikit-image
 
 # ---------------- Deep Learning ----------------
